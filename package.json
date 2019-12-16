@@ -1,0 +1,38 @@
+{
+  "name": "simplegooglemaps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "fbjs": "^0.8.17",
+    "jquery": "^3.4.1",
+    "load-google-maps-api-2": "^1.0.2",
+    "rsocket-core": "^0.0.18",
+    "rsocket-flowable": "^0.0.14",
+    "rsocket-tcp-server": "^0.0.18",
+    "rsocket-types": "^0.0.16",
+    "rsocket-websocket-client": "^0.0.18",
+    "rsocket-websocket-server": "^0.0.18",
+    "ws": "^5.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "watchify babel src -d public -w",
+    "dev": "watchify public/index.js -v -o public/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-flow": "^7.7.4",
+    "browserify": "13.3.0",
+    "load-google-maps-api-2": "^1.0.2",
+    "watchify": "3.11.1"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
+  }
+}
