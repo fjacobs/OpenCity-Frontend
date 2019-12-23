@@ -1,5 +1,7 @@
-/node_modules/
-
-/public/bundle.js
-/public/index.js
-/public/maploader.js
+node_modules/
+public/bundle.js
+public/index.js
+public/maploader.js
+public/rsocket.js
+public/static/rsocket.js
+public/rsocket1.js

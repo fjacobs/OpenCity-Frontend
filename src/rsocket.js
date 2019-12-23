@@ -1,86 +1,95 @@
+import {APPLICATION_JSON} from "rsocket-core";
+
 const {
     RSocketClient,
     JsonSerializer,
-    IdentitySerializer
+    IdentitySerializer,
+    MESSAGE_RSOCKET_ROUTING,
 } = require('rsocket-core');
+
 const RSocketWebSocketClient = require('rsocket-websocket-client').default;
 
-export default class RSocketFeatureClient {
+export default class RSocketGeojsonClient {
 
     client: RSocketClient;
-    x: number;
 
     constructor(url: String) {
 
-        //Create RSocket
-        if (this.client !== undefined) {
-            this.client.close();
-            //   document.getElementById("messages").innerHTML = "";
-        }
+        const keepAlive = 60000;
+        const lifetime = 180000;
+
         this.client = new RSocketClient({
             serializers: {
                 data: JsonSerializer,
                 metadata: IdentitySerializer
             },
             setup: {
-                keepAlive: 60000,
-                lifetime: 180000,
+                keepAlive: keepAlive,
+                lifetime: lifetime,
                 dataMimeType: 'application/json',
                 metadataMimeType: 'message/x.rsocket.routing.v0',
             },
-            transport: new RSocketWebSocketClient({
-                url: url
-            }),
+            transport: new RSocketWebSocketClient({url: url}),
         });
-
-        if (this.client === undefined) {
-            console.error("Error creating rsocket with url: " + url);
-        }
     }
 
-    createNumber(y: Number) : Number  {
-        this.x = y+1;
-        return x;
-    }
+    /* Note that rsocket is a higher level protocol that can use websocket as a transport -
+       neither the client or server can start pushing arbitrary data to the other (as in your WS example)
+       unless it initiates one of the defined actions (request-response, request-stream, etc).
+       In this case the client would typically make a requestResponse with a payload indicating the data it is requesting, and the server would reply
+       ith one response (to send multiple payloads use request stream). The corresponding response payload would be accessible via the onComplete handler
+       to requestResponse (missing in your second example).
+     */
 
-    getNumber(): number {
-        return this.x;
-    }
+    async requestResponse(messageRoute: String) {
 
-    requestStream(url: String, messageRoute: String, recvCallBack: function) {
+       const socket = await this.client.connect();
 
-       // this.client = this.addErrorMessage(url);
-        this.client.connect().subscribe({
-                onComplete: socket => {
-                    socket.requestStream({
-                        data: {
-                            //   'author': document.getElementById("author-filter").value
-                        },
-                        metadata: String.fromCharCode(messageRoute.length) + messageRoute,
-                    }).subscribe({
-                        onComplete: () => console.log('complete'),
-                        onError: error => {
-                            console.log(error);
-                            this.addErrorMessage("Connection has been closed due to ", error);
-                        },
-                        onNext: payload => {
-                            console.log(payload.data);
-                            recvCallBack(payload.data);
-                            // reloadMessages(payload.data);
-                        },
-                        onSubscribe: subscription => {
-                            subscription.request(2147483647);
-                        },
-                    });
-                },
+       return new Promise ((resolve, reject) => {
+            socket.requestResponse({
+                data: null,
+                metadata: String.fromCharCode(messageRoute.length) + messageRoute,
+            }).subscribe({
+                onComplete: complete => resolve(complete),
                 onError: error => {
-                    console.log(error);
-                    this.addErrorMessage("Connection has been refused due to ", error);
+                    reject(error);
                 },
-                onSubscribe: cancel => {
-                    /* call cancel() to abort */
-                }
+                onNext(payload: any) {
+                    console.log('onNext(%s)', payload.data);
+                },
             });
+            setTimeout(() => {
+            }, 30000000);
+        })
+    }
+
+    requestStream(messageRoute: String, callbackRecv: function, callBackError: function) {
+
+        this.client.connect().subscribe({
+            onComplete: socket => {
+                socket.requestStream({
+                    data: null,
+                    metadata: String.fromCharCode(messageRoute.length) + messageRoute,
+                }).subscribe({
+                    onComplete: () => console.log('complete'),
+                    onError: error => {
+                        console.log("requestStream error: " + error);
+                    },
+                    onNext: payload => {
+                        callbackRecv(payload.data);
+                    },
+                    onSubscribe: subscription => {
+                        subscription.request(2147483647);
+                    },
+                });
+            },
+            onError: error => {
+                console.error(error);
+            },
+            onSubscribe: cancel => {
+                /* call cancel() to abort */
+            }
+        });
     }
 
     addErrorMessage(prefix, error) {

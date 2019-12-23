@@ -1,21 +1,46 @@
 import MapLoader from './maploader.js';
-import RSocketFeatureClient from "./rsocket.js";
+import RSocketGeojsonClient from "./rsocket";
 
 // TODO:
-//  1. Receive FeatureCollection via Request/Response (not implemented)
-//  2. Receive Features that are changed compared to last via Request/Stream (test)
+//  1. Receive Features which are changed compared to last via Request/Stream (test)
+//  2. Replace JSON with CBOR
 
-const url =  'ws://localhost:8888/traveltime-message';
-const messageRoute = 'traveltime-message';
+const travelTimeInit = 'traveltime-collection';
+const msgRouteStream = 'traveltime-message';
 
-function main() {
-    let map = MapLoader.getMap();
-    let featureClient = new RSocketFeatureClient(url, messageRoute,streamMsgCallback);
-    featureClient.requestStream(url, messageRoute, streamMsgCallback());
+const REQUEST_RESPONSE_JSON = 'REQUEST_RESPONSE_JSON';
+const REQUEST_RESPONSE_STRING = "REQUEST_RESPONSE_STRING";
+
+const url = 'ws://localhost:9898/rsocket';
+
+let mapLoader = new MapLoader();
+let map;
+let featureClient;
+
+async function main() {
+
+    try {
+        map = await mapLoader.getMap();
+        featureClient = new RSocketGeojsonClient(url);
+        let x =  await featureClient.requestResponse(REQUEST_RESPONSE_JSON);
+        console.log(JSON.stringify(x.data));
+        map.data.addGeoJson(x.data);
+        //Subscribe for changes:
+        //featureClient.requestStream(msgRouteStream, receiveFeature, receiveError);
+
+    } catch (err) {
+        console.log(err);
+    }
 }
 
-function streamMsgCallback(message: Object) {
-    console.log(message);
+function rejected(result) {
+    console.log("Received error: " + result);
+    console.log(result.source);
 }
 
-main();
+function streamCallBack(feature: Object) {
+    console.log(feature);
+    map.data.add(feature);
+}
+
+main().then(console.log("main done"));

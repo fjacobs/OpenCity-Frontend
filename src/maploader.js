@@ -1,23 +1,26 @@
 let loadGoogleMapsApi = require('load-google-maps-api-2');
 
-export default class Maploader {
+export default class MapLoader {
 
-    static getMap() {
 
-        loadGoogleMapsApi.key = 'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
+    async getMap() {
+        return new Promise((resolve,reject) => {
 
-        loadGoogleMapsApi().then(function (googleMaps) {
-            console.log(googleMaps); //=> Object { Animation: Object, ...
+                loadGoogleMapsApi.key = 'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
+                loadGoogleMapsApi().then(function (googleMaps) {
 
-            let mapOptions = {
-                zoom: 13,
-                center: new google.maps.LatLng(52.37063538130748, 4.899999460629829),
-                mapTypeId: google.maps.MapTypeId.TERRAIN
-            //   styles: mapstyle
-            };
-            return new googleMaps.Map(document.getElementById('map'), mapOptions);
-        }).catch(function (err) {
-            console.error(err);
-        });
+                    let mapOptions = {
+                        zoom: 13,
+                        center: new google.maps.LatLng(52.37063538130748, 4.899999460629829),
+                        mapTypeId: google.maps.MapTypeId.TERRAIN
+                    };
+
+                    let map =new googleMaps.Map(document.getElementById('map'), mapOptions);
+
+                    resolve(map);
+                }).catch(function (err) {
+                    reject(err);
+                });
+        })
     }
 }

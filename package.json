@@ -1,9 +1,14 @@
 {
-  "name": "simplegooglemaps",
+  "name": "opencity-frontend",
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fjacobs/OpenCity-Frontend.git"
+  },
   "main": "src/index.js",
   "dependencies": {
+    "@babel/runtime": "^7.7.6",
     "fbjs": "^0.8.17",
     "jquery": "^3.4.1",
     "load-google-maps-api-2": "^1.0.2",
@@ -16,18 +21,20 @@
     "ws": "^5.2.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "watchify babel src -d public -w",
-    "dev": "watchify public/index.js -v -o public/bundle.js"
+    "compile": "babel src -d public -w",
+    "bundle": "watchify public/index.js -v -o public/bundle.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "core-js": "^3.5.0",
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
+    "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.6",
     "@babel/preset-flow": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
     "browserify": "13.3.0",
     "load-google-maps-api-2": "^1.0.2",
     "watchify": "3.11.1"
