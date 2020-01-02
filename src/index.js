@@ -1,42 +1,41 @@
 import MapLoader from './maploader.js';
 import RSocketGeojsonClient from "./rsocket";
+import TravelTimeService from "./traveltime";
 
 // TODO:
 //  1. Receive Features which are changed compared to last via Request/Stream (test)
 //  2. Replace JSON with CBOR
 
-const travelTimeInit = 'traveltime-collection';
-const msgRouteStream = 'traveltime-message';
 
-const REQUEST_RESPONSE_JSON = 'REQUEST_RESPONSE_JSON';
-const REQUEST_RESPONSE_STRING = "REQUEST_RESPONSE_STRING";
+const INIT_ROUTE = 'REQUEST_RESPONSE_JSON';
+const STREAM_ROUTE = "REQUEST_STREAM_JSON";
 
-const url = 'ws://localhost:9898/rsocket';
-
-let mapLoader = new MapLoader();
-let map;
-let featureClient;
+const url = 'ws://localhost:9897/rsocket';
+let key =  'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
 
 async function main() {
 
-    try {
-        map = await mapLoader.getMap();
-        featureClient = new RSocketGeojsonClient(url);
-        let x =  await featureClient.requestResponse(REQUEST_RESPONSE_JSON);
-        console.log(JSON.stringify(x.data));
-        map.data.addGeoJson(x.data);
-        //Subscribe for changes:
-        //featureClient.requestStream(msgRouteStream, receiveFeature, receiveError);
+    let map;
+    let googleMapsApi;
 
+    try {
+         googleMapsApi = await MapLoader.getGoogleMapsApi(key);
+         map = await MapLoader.createMap(googleMapsApi);
     } catch (err) {
-        console.log(err);
+        console.log("Error loading map. " + err);
+        // console.log(err.source);
+    }
+
+    try {
+        let travelTimeService = new TravelTimeService(map, googleMapsApi, new RSocketGeojsonClient(url));
+        await travelTimeService.initMap(INIT_ROUTE);
+   //     travelTimeService.subscribe(STREAM_ROUTE);
+    } catch (err) {
+        console.log("Error in traveltime service: " + err);
+        // console.log(err.source);
     }
 }
 
-function rejected(result) {
-    console.log("Received error: " + result);
-    console.log(result.source);
-}
 
 function streamCallBack(feature: Object) {
     console.log(feature);

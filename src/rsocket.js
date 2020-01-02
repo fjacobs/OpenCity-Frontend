@@ -33,14 +33,6 @@ export default class RSocketGeojsonClient {
         });
     }
 
-    /* Note that rsocket is a higher level protocol that can use websocket as a transport -
-       neither the client or server can start pushing arbitrary data to the other (as in your WS example)
-       unless it initiates one of the defined actions (request-response, request-stream, etc).
-       In this case the client would typically make a requestResponse with a payload indicating the data it is requesting, and the server would reply
-       ith one response (to send multiple payloads use request stream). The corresponding response payload would be accessible via the onComplete handler
-       to requestResponse (missing in your second example).
-     */
-
     async requestResponse(messageRoute: String) {
 
        const socket = await this.client.connect();
@@ -49,7 +41,8 @@ export default class RSocketGeojsonClient {
             socket.requestResponse({
                 data: null,
                 metadata: String.fromCharCode(messageRoute.length) + messageRoute,
-            }).subscribe({
+            })
+            .subscribe({
                 onComplete: complete => resolve(complete),
                 onError: error => {
                     reject(error);
