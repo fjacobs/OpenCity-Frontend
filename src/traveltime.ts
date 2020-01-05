@@ -1,18 +1,15 @@
 import RSocketGeojsonClient from "./rsocket";
-
+import { google } from '@google/maps';
 
 export default class TravelTimeService {
 
     rsocketClient: RSocketGeojsonClient;
     map: google.maps;
-    data: google.maps.Data;
     googleMapsApi: any;
     features: any;
 
-    constructor( map: google.maps, googleMapsApi:any, rSocketClient: RSocketGeojsonClient ) {
+    constructor( map: google.maps, rSocketClient: RSocketGeojsonClient ) {
         this.map = map;
-        this.data = map.Data;
-        this.googleMapsApi = googleMapsApi;
         this.rsocketClient = rSocketClient;
         map.data.addListener('addfeature', this.addFeatureEvent);
     }
@@ -22,7 +19,10 @@ export default class TravelTimeService {
     }
 
     addFeatureEvent = (event: google.maps.event) => {
+        let feature = event.Feature;
         console.log(event.feature.getProperty('Length'));
+        let data = this.map.Data;
+
     }
 
 
@@ -40,7 +40,7 @@ export default class TravelTimeService {
     async initMap(route) {
         let rsocketPacket = await this.rsocketClient.requestResponse(route);
         let features = this.map.data.addGeoJson(rsocketPacket.data);
-        this.features = result.features;
+     //   this.features = result.features;
 
         console.log(this.features.length);
 

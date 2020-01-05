@@ -1,5 +1,6 @@
 import {APPLICATION_JSON} from "rsocket-core";
 
+// @ts-ignore
 const {
     RSocketClient,
     JsonSerializer,
@@ -7,10 +8,12 @@ const {
     MESSAGE_RSOCKET_ROUTING,
 } = require('rsocket-core');
 
+// @ts-ignore
 const RSocketWebSocketClient = require('rsocket-websocket-client').default;
 
 export default class RSocketGeojsonClient {
 
+    // @ts-ignore
     client: RSocketClient;
 
     constructor(url: String) {
@@ -56,7 +59,7 @@ export default class RSocketGeojsonClient {
         })
     }
 
-    requestStream(messageRoute: String, callbackRecv: function, onComplete: function, callBackError: function) {
+    requestStream(messageRoute: String, callbackRecv, onComplete, callBackError) {
 
         this.client.connect().subscribe({
             onComplete: socket => {

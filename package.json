@@ -6,9 +6,13 @@
     "type": "git",
     "url": "https://github.com/fjacobs/OpenCity-Frontend.git"
   },
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "dependencies": {
+    "@babel/plugin-transform-typescript": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.7",
     "@babel/runtime": "^7.7.7",
+    "@google/maps": "^1.0.2",
+    "@types/googlemaps": "^3.39.0",
     "fbjs": "^1.0.0",
     "jquery": "^3.4.1",
     "load-google-maps-api-2": "^1.0.2",
@@ -21,7 +25,7 @@
     "ws": "^7.2.1"
   },
   "scripts": {
-    "compile": "babel src -d public -w",
+    "compile": "babel src -d public -w --extensions '.ts, .js' ",
     "bundle": "watchify public/index.js -v -o public/bundle.js"
   },
   "keywords": [],
@@ -35,7 +39,6 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-flow": "^7.7.4",
-    "@types/googlemaps" :"^3.39.0",
     "browserify": "^16.5.0",
     "core-js": "^3.6.1",
     "load-google-maps-api-2": "^1.0.2",

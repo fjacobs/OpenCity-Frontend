@@ -13,6 +13,7 @@ const STREAM_ROUTE = "REQUEST_STREAM_JSON";
 const url = 'ws://localhost:9897/rsocket';
 let key =  'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
 
+// @ts-ignore
 async function main() {
 
     let map;
@@ -27,7 +28,7 @@ async function main() {
     }
 
     try {
-        let travelTimeService = new TravelTimeService(map, googleMapsApi, new RSocketGeojsonClient(url));
+        let travelTimeService = new TravelTimeService(map, new RSocketGeojsonClient(url));
     //    await travelTimeService.initMap(INIT_ROUTE);
         await travelTimeService.subscribe(STREAM_ROUTE);
     } catch (err) {
@@ -37,4 +38,5 @@ async function main() {
 }
 
 
+// @ts-ignore
 main().then(console.log("main done"));
