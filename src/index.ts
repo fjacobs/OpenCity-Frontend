@@ -6,14 +6,11 @@ import TravelTimeService from "./traveltime";
 //  1. Receive Features which are changed compared to last via Request/Stream (test)
 //  2. Replace JSON with CBOR
 
-
-const INIT_ROUTE = 'REQUEST_RESPONSE_JSON';
 const STREAM_ROUTE = "REQUEST_STREAM_JSON";
 
 const url = 'ws://localhost:9897/rsocket';
 let key =  'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
 
-// @ts-ignore
 async function main() {
 
     let map;
@@ -22,18 +19,15 @@ async function main() {
     try {
          googleMapsApi = await MapLoader.getGoogleMapsApi(key);
          map = await MapLoader.createMap(googleMapsApi);
-    } catch (err) {
-        console.log("Error loading map. " + err);
-        // console.log(err.source);
+    } catch (error) {
+        console.error("Error loading map. " + error);
     }
 
     try {
-        let travelTimeService = new TravelTimeService(map, new RSocketGeojsonClient(url));
-    //    await travelTimeService.initMap(INIT_ROUTE);
+        let travelTimeService = new TravelTimeService(map, googleMapsApi, new RSocketGeojsonClient(url));
         await travelTimeService.subscribe(STREAM_ROUTE);
-    } catch (err) {
-        console.log("Error in traveltime service: " + err);
-        // console.log(err.source);
+    } catch (error) {
+        console.error("Error in traveltime service: " + error);
     }
 }
 
