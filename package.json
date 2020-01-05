@@ -8,8 +8,8 @@
   },
   "main": "src/index.js",
   "dependencies": {
-    "@babel/runtime": "^7.7.6",
-    "fbjs": "^0.8.17",
+    "@babel/runtime": "^7.7.7",
+    "fbjs": "^1.0.0",
     "jquery": "^3.4.1",
     "load-google-maps-api-2": "^1.0.2",
     "rsocket-core": "^0.0.18",
@@ -18,7 +18,7 @@
     "rsocket-types": "^0.0.16",
     "rsocket-websocket-client": "^0.0.18",
     "rsocket-websocket-server": "^0.0.18",
-    "ws": "^5.2.2"
+    "ws": "^7.2.1"
   },
   "scripts": {
     "compile": "babel src -d public -w",
@@ -28,17 +28,18 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/polyfill": "^7.7.0",
-    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-env": "^7.7.7",
     "@babel/preset-flow": "^7.7.4",
-    "browserify": "13.3.0",
-    "core-js": "^3.5.0",
+    "@types/googlemaps" :"^3.39.0",
+    "browserify": "^16.5.0",
+    "core-js": "^3.6.1",
     "load-google-maps-api-2": "^1.0.2",
-    "watchify": "3.11.1"
+    "watchify": "^3.11.1"
   },
   "engines": {
     "yarn": ">= 1.0.0"

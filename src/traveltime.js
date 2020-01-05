@@ -14,17 +14,15 @@ export default class TravelTimeService {
         this.data = map.Data;
         this.googleMapsApi = googleMapsApi;
         this.rsocketClient = rSocketClient;
+        map.data.addListener('addfeature', this.addFeatureEvent);
     }
 
     receiveFeature = (payload) => {
-        // this.map.data.addFeature(payload.data);
-        let feature = this.data.addGeoJson(payload.data);
-
+        let feature = this.map.data.addGeoJson(payload.data);
     }
 
-    featureEvent = () => {
-
-        console.log(payload.data);
+    addFeatureEvent = (event: google.maps.event) => {
+        console.log(event.feature.getProperty('Length'));
     }
 
 
