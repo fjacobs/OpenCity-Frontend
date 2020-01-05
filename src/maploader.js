@@ -7,6 +7,7 @@ export default class MapLoader {
 
         return new Promise((resolve, reject) => {
             loadGoogleMapsApi.key = key;
+            loadGoogleMapsApi.version = 'weekly';
             loadGoogleMapsApi().then(function (googleMaps) {
 
                     resolve(googleMaps);

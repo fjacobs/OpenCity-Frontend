@@ -26,7 +26,7 @@ export default class RSocketGeojsonClient {
             setup: {
                 keepAlive: keepAlive,
                 lifetime: lifetime,
-                dataMimeType: 'application/json',
+                dataMimeType: 'application/stream+json',
                 metadataMimeType: 'message/x.rsocket.routing.v0',
             },
             transport: new RSocketWebSocketClient({url: url}),
@@ -56,7 +56,7 @@ export default class RSocketGeojsonClient {
         })
     }
 
-    requestStream(messageRoute: String, callbackRecv: function, callBackError: function) {
+    requestStream(messageRoute: String, callbackRecv: function, onComplete: function, callBackError: function) {
 
         this.client.connect().subscribe({
             onComplete: socket => {
@@ -64,12 +64,15 @@ export default class RSocketGeojsonClient {
                     data: null,
                     metadata: String.fromCharCode(messageRoute.length) + messageRoute,
                 }).subscribe({
-                    onComplete: () => console.log('complete'),
+                    onComplete: () => {
+                        console.log('RSocket.requestStream->onComplete() called.');
+                        onComplete(messageRoute);
+                    },
                     onError: error => {
                         console.log("requestStream error: " + error);
                     },
                     onNext: payload => {
-                        callbackRecv(payload.data);
+                        callbackRecv(payload);
                     },
                     onSubscribe: subscription => {
                         subscription.request(2147483647);

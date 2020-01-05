@@ -28,18 +28,13 @@ async function main() {
 
     try {
         let travelTimeService = new TravelTimeService(map, googleMapsApi, new RSocketGeojsonClient(url));
-        await travelTimeService.initMap(INIT_ROUTE);
-   //     travelTimeService.subscribe(STREAM_ROUTE);
+    //    await travelTimeService.initMap(INIT_ROUTE);
+        await travelTimeService.subscribe(STREAM_ROUTE);
     } catch (err) {
         console.log("Error in traveltime service: " + err);
         // console.log(err.source);
     }
 }
 
-
-function streamCallBack(feature: Object) {
-    console.log(feature);
-    map.data.add(feature);
-}
 
 main().then(console.log("main done"));
