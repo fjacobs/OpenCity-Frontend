@@ -1,10 +1,9 @@
 node_modules/
 public/bundle.js
 public/index.js
-public/maploader.js
-public/rsocket.js
+public/MapLoader.js
+public/RsocketGeojsonClient.js
 public/static/rsocket.js
-public/rsocket1.js
-public/traveltime.js
+public/TravelTime.js
 
 .idea/dictionaries/stormraptor.xml

@@ -1,12 +1,10 @@
-import MapLoader from './maploader.js';
-import RSocketGeojsonClient from "./rsocket";
-import TravelTimeService from "./traveltime";
+import MapLoader from './MapLoader.js';
+import RSocketGeojsonClient from "./RsocketGeojsonClient";
+import TravelTimeService from "./TravelTime";
 
-// TODO:
-//  1. Receive Features which are changed compared to last via Request/Stream (test)
-//  2. Replace JSON with CBOR
 
-const STREAM_ROUTE = "REQUEST_STREAM_JSON";
+
+const STREAM_ROUTE = "TRAVELTIME_STREAM";
 
 const url = 'ws://localhost:9897/rsocket';
 let key =  'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
@@ -31,6 +29,35 @@ async function main() {
     }
 }
 
+let gridData = [];
 
+// @ts-ignore
+window.gridData = gridData;
+
+export function setErrorNotification(error){
+
+    // @ts-ignore
+    window.gridData.push({
+        Id: error.Id,
+        Name: error.Name,
+        Description: error.Description,
+        Date: new Date().toLocaleString(),
+        Category: error.Category,
+    });
+
+    // @ts-ignore
+    console.log(window.gridData);
+}
+// @ts-ignore
+window.setgriddata = setErrorNotification;
+
+export function getGridData() {
+    // @ts-ignore
+    console.log(window.gridData);
+    // @ts-ignore
+    return window.gridData;
+}
+// @ts-ignore
+window.getGridData = getGridData;
 // @ts-ignore
 main().then(console.log("main done"));

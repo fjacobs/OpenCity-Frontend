@@ -13,6 +13,10 @@
     "@babel/runtime": "^7.7.7",
     "@google/maps": "^1.0.2",
     "@types/googlemaps": "^3.39.0",
+    "@types/jquery": "^3.3.31",
+    "@types/rsocket-flowable": "^0.0.2",
+    "@types/rsocket-types": "^0.0.2",
+    "@types/rsocket-websocket-client": "^0.0.3",
     "fbjs": "^1.0.0",
     "jquery": "^3.4.1",
     "load-google-maps-api-2": "^1.0.2",
@@ -22,6 +26,7 @@
     "rsocket-types": "^0.0.16",
     "rsocket-websocket-client": "^0.0.18",
     "rsocket-websocket-server": "^0.0.18",
+    "uuid": "^3.4.0",
     "ws": "^7.2.1"
   },
   "scripts": {
