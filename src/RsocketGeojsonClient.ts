@@ -1,23 +1,20 @@
-import {APPLICATION_JSON} from "rsocket-core";
+import {APPLICATION_JSON, RSocketClient, JsonSerializer, IdentitySerializer, MESSAGE_RSOCKET_ROUTING} from "rsocket-core";
+import RSocketWebSocketClient from "rsocket-websocket-client";
+import {setErrorNotification} from "./index";
+const uuidv1 = require('uuid/v1');
 
 // @ts-ignore
-const {
-    RSocketClient,
-    JsonSerializer,
-    IdentitySerializer,
-    MESSAGE_RSOCKET_ROUTING,
-} = require('rsocket-core');
-
-// @ts-ignore
-const RSocketWebSocketClient = require('rsocket-websocket-client').default;
-
 export default class RSocketGeojsonClient {
 
     // @ts-ignore
-    client: RSocketClient;
+    private client: RSocketClient;
+    private url: string;
+    private guuid: string;
 
-    constructor(url: String) {
+    constructor(url: string) {
 
+        this.url = url;
+        this.guuid =  uuidv1();
         const keepAlive = 60000;
         const lifetime = 180000;
 
@@ -32,9 +29,13 @@ export default class RSocketGeojsonClient {
                 dataMimeType: 'application/stream+json',
                 metadataMimeType: 'message/x.rsocket.routing.v0',
             },
-            transport: new RSocketWebSocketClient({url: url}),
-        });
+            transport: new RSocketWebSocketClient({
+                debug:true,
+                url:url
+            })
+        } );
     }
+
 
     async requestResponse(messageRoute: String) {
 
@@ -59,7 +60,8 @@ export default class RSocketGeojsonClient {
         })
     }
 
-    requestStream(messageRoute: String, callbackRecv, onComplete, callBackError) {
+
+    requestStream(messageRoute: String, callbackRecv, onComplete) {
 
         this.client.connect().subscribe({
             onComplete: socket => {
@@ -68,11 +70,13 @@ export default class RSocketGeojsonClient {
                     metadata: String.fromCharCode(messageRoute.length) + messageRoute,
                 }).subscribe({
                     onComplete: () => {
-                        console.log('RSocket.requestStream->onComplete() called.');
+                        console.log('RSocket.requestStream onComplete() called.');
                         onComplete(messageRoute);
                     },
                     onError: error => {
-                        console.log("requestStream error: " + error);
+                        error.url = this.url+"/"+messageRoute;
+                        let streamError = {Id:this.guuid, Name:"TravelTime.rSocketClient", Description:"Error during streaming: "+ error, Category: 3, Availability: false };
+                        setErrorNotification(streamError);
                     },
                     onNext: payload => {
                         callbackRecv(payload);
@@ -82,19 +86,15 @@ export default class RSocketGeojsonClient {
                     },
                 });
             },
+
             onError: error => {
-                console.error(error);
+                error.url = this.url+"/"+messageRoute;
+                let connectionError = {Id: this.guuid, Name:"TravelTime RSocketClient", Description:"Could not connect to: " + error.url, Category: 3, Availability: false };
+                setErrorNotification(connectionError);
             },
             onSubscribe: cancel => {
-                /* call cancel() to abort */
-            }
+                /* call cancel() to abort */},
         });
     }
 
-    addErrorMessage(prefix, error) {
-        // var ul = document.getElementById("messages");
-        // var li = document.createElement("li");
-        // li.appendChild(document.createTextNode(prefix + error));
-        // ul.appendChild(li);
-    }
 }

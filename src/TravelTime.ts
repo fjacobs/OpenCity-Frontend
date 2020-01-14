@@ -1,8 +1,9 @@
-import RSocketGeojsonClient from "./rsocket";
+import RSocketGeojsonClient from "./RsocketGeojsonClient";
 import {google} from '@google/maps';
 import {LatLng} from '@google/maps';
 import {Feature} from '@google/maps';
 import {event} from '@google/maps';
+import {setErrorNotification} from "./index";
 
 
 export default class TravelTimeService {
@@ -72,12 +73,10 @@ export default class TravelTimeService {
         console.log("oncomplete in service");
     }
 
-    errorCallback(error) {
-        console.error("Error: " + error);
-    }
+
 
     async subscribe(route) {
-        this.rsocketClient.requestStream(route, this.receiveFeature.bind(this), this.onComplete.bind(this), this.errorCallback.bind(this));
+        this.rsocketClient.requestStream(route, this.receiveFeature.bind(this), this.onComplete.bind(this));
     }
 
     speedToColor(type, speed) {
