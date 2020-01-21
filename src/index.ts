@@ -1,10 +1,17 @@
 import MapLoader from './MapLoader.js';
 import RSocketGeojsonClient from "./RsocketGeojsonClient";
 import TravelTimeService from "./TravelTime";
+import initNotificationTable from "./NotificationTable";
 
+/*
+ *   TODO:
+ *   - Create button streamHistory
+ *      - Cancel stream liveData GeoJsonRSocketClient
+ *      - Start history stream
+ */
 
-
-const STREAM_ROUTE = "TRAVELTIME_STREAM";
+const STREAM_LIVE = "TRAVELTIME_STREAM";
+const STREAM_HISTORY = "TRAVELTIME_HISTORY";
 
 const url = 'ws://localhost:9897/rsocket';
 let key =  'AIzaSyB6SSvjmmzWA9zOVHhh4IsBbp3qqY25qas';
@@ -21,9 +28,11 @@ async function main() {
         console.error("Error loading map. " + error);
     }
 
+    initNotificationTable();
+
     try {
         let travelTimeService = new TravelTimeService(map, googleMapsApi, new RSocketGeojsonClient(url));
-        await travelTimeService.subscribe(STREAM_ROUTE);
+        await travelTimeService.subscribe(STREAM_LIVE);
     } catch (error) {
         console.error("Error in traveltime service: " + error);
     }
