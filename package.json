@@ -18,7 +18,7 @@
     "@types/rsocket-types": "^0.0.2",
     "@types/rsocket-websocket-client": "^0.0.3",
     "fbjs": "^1.0.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "load-google-maps-api-2": "^1.0.2",
     "rsocket-core": "^0.0.18",
     "rsocket-flowable": "^0.0.14",
